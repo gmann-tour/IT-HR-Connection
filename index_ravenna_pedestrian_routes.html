@@ -467,51 +467,49 @@
           "#0f766e",
         ];
         let ok = 0;
+
+        async function routeWithOsrmFoot(site) {
+          const coordinates = hotel[1] + "," + hotel[0] + ";" + site.pos[1] + "," + site.pos[0];
+          const url =
+            "https://routing.openstreetmap.de/routed-foot/route/v1/driving/" +
+            coordinates +
+            "?overview=full&geometries=geojson&steps=false";
+          const response = await fetch(url);
+          if (!response.ok) throw new Error("OSRM foot HTTP " + response.status);
+          const data = await response.json();
+          const route = data?.routes?.[0];
+          const rawCoords = route?.geometry?.coordinates;
+          if (!rawCoords) throw new Error("OSRM foot geometry missing");
+          return {
+            coords: rawCoords.map((c) => [c[1], c[0]]),
+            mins: Math.max(1, Math.round(route.duration / 60)),
+            km: Number(route.distance / 1000).toFixed(2),
+          };
+        }
+
         for (let i = 0; i < sites.length; i++) {
           const site = sites[i];
-          const request = {
-            locations: [
-              { lat: hotel[0], lon: hotel[1] },
-              { lat: site.pos[0], lon: site.pos[1] },
-            ],
-            costing: "pedestrian",
-            units: "kilometers",
-            shape_format: "geojson",
-            language: "en-US",
-          };
-          const url =
-            "https://valhalla.openstreetmap.de/route?json=" +
-            encodeURIComponent(JSON.stringify(request));
           try {
-            const response = await fetch(url);
-            if (!response.ok) throw new Error("HTTP " + response.status);
-            const data = await response.json();
-            const shape = data.trip.legs[0].shape;
-            const rawCoords = shape && shape.coordinates ? shape.coordinates : null;
-            if (!rawCoords) throw new Error("Route geometry missing");
-            const coords = rawCoords.map((c) => [c[1], c[0]]);
-            const summary = data.trip.summary;
-            const mins = Math.max(1, Math.round(summary.time / 60));
-            const km = Number(summary.length).toFixed(2);
-            L.polyline(coords, { color: colours[i], weight: 5, opacity: 0.82 })
+            const route = await routeWithOsrmFoot(site);
+            L.polyline(route.coords, { color: colours[i], weight: 5, opacity: 0.82 })
               .addTo(map)
-              .bindTooltip(site.name + ": " + mins + " min, " + km + " km");
+              .bindTooltip(site.name + ": " + route.mins + " min, " + route.km + " km");
             const label = document.getElementById("walk-" + site.n);
-            if (label) label.textContent = "About " + mins + " min · " + km + " km walk";
+            if (label) {
+              label.textContent = "About " + route.mins + " min · " + route.km + " km walk";
+            }
             ok++;
-          } catch (err) {
+          } catch (error) {
             const label = document.getElementById("walk-" + site.n);
             if (label) label.textContent = "Pedestrian route unavailable";
-            console.warn("Route failed for " + site.name, err);
+            console.warn("OSRM foot route failed for " + site.name, error);
           }
         }
+
         status.textContent =
           ok === sites.length
-            ? "All " + ok + " pedestrian routes loaded."
-            : ok +
-              " of " +
-              sites.length +
-              " pedestrian routes loaded. Refresh to retry unavailable routes.";
+            ? "All " + ok + " pedestrian routes loaded via OSRM foot."
+            : ok + " of " + sites.length + " pedestrian routes loaded via OSRM foot.";
         setTimeout(() => map.invalidateSize(), 150);
       })();
     </script>
