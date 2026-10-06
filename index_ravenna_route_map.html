@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Italy Itinerary V2.1</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <style>
+      body {
+        font-family:
+          Segoe UI,
+          Arial,
+          sans-serif;
+        background: #f4f6f9;
+        padding: 20px;
+      }
+      .container {
+        max-width: 1200px;
+        margin: auto;
+      }
+      .card,
+      details {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin: 0 0 16px;
+        overflow: hidden;
+      }
+      summary,
+      .header {
+        background: #1e40af;
+        color: #fff;
+        padding: 14px;
+        font-weight: 700;
+      }
+      .content {
+        padding: 16px;
+      }
+      .btn {
+        background: #2563eb;
+        color: #fff;
+        padding: 10px 14px;
+        border-radius: 8px;
+        text-decoration: none;
+        border: none;
+        margin: 4px;
+        display: inline-block;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 12px;
+      }
+      .pill {
+        background: #eff6ff;
+        padding: 10px;
+        border-radius: 8px;
+        margin: 8px 0;
+      }
+      .badge {
+        background: #16a34a;
+        color: #fff;
+        padding: 4px 8px;
+        border-radius: 999px;
+      }
+      .dark {
+        background: #111827;
+        color: #e5e7eb;
+      }
+      .dark .card,
+      .dark details {
+        background: #1f2937;
+      }
+      @media print {
+        .controls {
+          display: none;
+        }
+      }
+      #ravenna-map {
+        height: 620px;
+        width: 100%;
+        border-radius: 10px;
+        border: 1px solid #cbd5e1;
+        background: #e5e7eb;
+      }
+      .map-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 18px;
+        margin-top: 12px;
+        padding: 12px;
+        background: #fff;
+        border-radius: 8px;
+      }
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 0.9rem;
+      }
+      .legend-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        display: inline-block;
+        border: 2px solid #fff;
+        box-shadow: 0 0 0 1px #64748b;
+      }
+      .legend-line {
+        width: 30px;
+        border-top: 4px dashed #7c3aed;
+        display: inline-block;
+      }
+      .map-label {
+        background: #fff;
+        border: 1px solid #334155;
+        border-radius: 4px;
+        color: #111827;
+        font-weight: 700;
+        padding: 2px 6px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+      }
+      .map-number {
+        background: #2563eb;
+        color: #fff;
+        border: 2px solid #fff;
+        border-radius: 50%;
+        width: 26px !important;
+        height: 26px !important;
+        line-height: 22px;
+        text-align: center;
+        font-weight: 700;
+        box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+      }
+      .map-number.hotel {
+        background: #dc2626;
+      }
+      .map-fallback {
+        padding: 18px;
+        background: #fff7ed;
+        color: #9a3412;
+        border: 1px solid #fdba74;
+        border-radius: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="controls">
+        <button
+          class="btn"
+          onclick="document.querySelectorAll('details').forEach((d) => (d.open = true))"
+        >
+          Expand All</button
+        ><button
+          class="btn"
+          onclick="document.querySelectorAll('details').forEach((d) => (d.open = false))"
+        >
+          Collapse All</button
+        ><button class="btn" onclick="document.body.classList.toggle('dark')">Dark Mode</button
+        ><button class="btn" onclick="window.print()">Print/PDF</button>
+      </div>
+      <div class="card">
+        <div class="header">🇭🇷 Croatian & 🇮🇹 Italian Language Helper</div>
+        <div class="content">
+          <select id="lang">
+            <option value="croatian">Croatian</option>
+            <option value="italian">Italian</option>
+          </select>
+          <h2 id="phrase"></h2>
+          <div class="pill"><b>English:</b> <span id="eng"></span></div>
+          <div class="pill"><b>Use case:</b> <span id="use"></span></div>
+          <button class="btn" onclick="speakPhrase()">🔊 Listen</button
+          ><button class="btn" onclick="newPhrase()">🎲 New Phrase</button>
+        </div>
+      </div>
+      <details open>
+        <summary>Fri 4 July - Ravenna</summary>
+        <div class="content">
+          <div class="grid">
+            <div class="pill">
+              <h3>🏨 Accommodation</h3>
+              <p><b>A Casa Di Paola</b><br />Via Paolo Costa 31, Ravenna</p>
+              <a
+                class="btn"
+                href="https://www.google.com/maps/search/?api=1&query=Via+Paolo+Costa+31+Ravenna"
+                target="_blank"
+                >Google Maps</a
+              ><a
+                class="btn"
+                href="https://www.openstreetmap.org/?mlat=44.419037&mlon=12.201477#map=18/44.419037/12.201477"
+                target="_blank"
+                >OpenStreetMap</a
+              >
+            </div>
+            <div class="pill">
+              <h3>📍 Sites · Walk from Accommodation</h3>
+              <p><b>1. Piazza del Popolo</b><br />~3 min walk</p>
+              <p><b>2. Arian Baptistery</b><br />~2 min walk</p>
+              <p><b>3. Dante's Tomb</b><br />~5 min walk</p>
+              <p><b>4. Basilica di Sant'Apollinare Nuovo</b><br />~4 min walk</p>
+              <p><b>5. Basilica di San Vitale</b><br />~6 min walk</p>
+              <p><b>6. Mausoleum of Galla Placidia</b><br />~7 min walk</p>
+            </div>
+          </div>
+          <div class="pill" style="margin-top: 16px">
+            <h3>🗺️ Accommodation, Sites &amp; Walking Routes</h3>
+            <div
+              id="ravenna-map"
+              role="img"
+              aria-label="Map showing A Casa Di Paola and walking links to six Ravenna sites"
+            >
+              <noscript
+                ><div class="map-fallback">
+                  JavaScript must be enabled to display this map.
+                </div></noscript
+              >
+            </div>
+            <div class="map-legend">
+              <div class="legend-item">
+                <span class="legend-dot" style="background: #dc2626"></span><b>H</b> Accommodation
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot" style="background: #2563eb"></span><b>1–6</b> Sites
+              </div>
+              <div class="legend-item">
+                <span class="legend-line"></span>Approx. walking route from accommodation
+              </div>
+            </div>
+            <small
+              >Map © OpenStreetMap contributors. Dashed lines are approximate walking links for
+              orientation, not turn-by-turn navigation.</small
+            >
+          </div>
+          <h3>🍽️ Dinner Options for 8 People (~€40 pp)</h3>
+          <div class="grid">
+            <div class="pill">
+              <h4>Ca' de Vèn <span class="badge">8 Guests</span></h4>
+              <p>Budget: €30–45 pp</p>
+              <p>Via Corrado Ricci 24, Ravenna</p>
+              <p>Approx. 5 min walk from accommodation</p>
+              <a
+                class="btn"
+                target="_blank"
+                href="https://www.google.com/maps/search/?api=1&query=Via+Corrado+Ricci+24+Ravenna"
+                >Map</a
+              >
+            </div>
+            <div class="pill">
+              <h4>Osteria Passatelli <span class="badge">8 Guests</span></h4>
+              <p>Budget: €35–45 pp</p>
+              <p>Via Ponte Marino 19, Ravenna</p>
+              <p>Approx. 4 min walk from accommodation</p>
+              <a
+                class="btn"
+                target="_blank"
+                href="https://www.google.com/maps/search/?api=1&query=Via+Ponte+Marino+19+Ravenna"
+                >Map</a
+              >
+            </div>
+          </div>
+        </div>
+      </details>
+      <details>
+        <summary>Day 2</summary>
+        <div class="content">
+          Add destination, accommodation, maps, travel times, restaurants and sightseeing.
+        </div>
+      </details>
+      <details>
+        <summary>Day 3</summary>
+        <div class="content">
+          Add destination, accommodation, maps, travel times, restaurants and sightseeing.
+        </div>
+      </details>
+      <details>
+        <summary>Day 4</summary>
+        <div class="content">
+          Add destination, accommodation, maps, travel times, restaurants and sightseeing.
+        </div>
+      </details>
+      <details>
+        <summary>Day 5</summary>
+        <div class="content">
+          Add destination, accommodation, maps, travel times, restaurants and sightseeing.
+        </div>
+      </details>
+      <details>
+        <summary>Day 6</summary>
+        <div class="content">
+          Add destination, accommodation, maps, travel times, restaurants and sightseeing.
+        </div>
+      </details>
+      <details>
+        <summary>Day 7</summary>
+        <div class="content">
+          Add destination, accommodation, maps, travel times, restaurants and sightseeing.
+        </div>
+      </details>
+      <details>
+        <summary>Day 8</summary>
+        <div class="content">
+          Add destination, accommodation, maps, travel times, restaurants and sightseeing.
+        </div>
+      </details>
+      <details>
+        <summary>Day 9</summary>
+        <div class="content">
+          Add destination, accommodation, maps, travel times, restaurants and sightseeing.
+        </div>
+      </details>
+      <details>
+        <summary>Day 10</summary>
+        <div class="content">
+          Add destination, accommodation, maps, travel times, restaurants and sightseeing.
+        </div>
+      </details>
+      <details>
+        <summary>Day 11</summary>
+        <div class="content">
+          Add destination, accommodation, maps, travel times, restaurants and sightseeing.
+        </div>
+      </details>
+    </div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script>
+      (function () {
+        const holder = document.getElementById("ravenna-map");
+        if (!holder) return;
+        if (typeof L === "undefined") {
+          holder.innerHTML =
+            '<div class="map-fallback"><b>Map library did not load.</b><br>Check that GitHub Pages can access unpkg.com and tile.openstreetmap.org, then refresh.</div>';
+          return;
+        }
+        const hotel = [44.419037, 12.201477];
+        const sites = [
+          { n: 1, name: "Piazza del Popolo", pos: [44.41776, 12.19971], time: "~3 min" },
+          { n: 2, name: "Arian Baptistery", pos: [44.41861, 12.2025], time: "~2 min" },
+          { n: 3, name: "Dante's Tomb", pos: [44.41616, 12.20091], time: "~5 min" },
+          {
+            n: 4,
+            name: "Basilica di Sant'Apollinare Nuovo",
+            pos: [44.41667, 12.20472],
+            time: "~4 min",
+          },
+          { n: 5, name: "Basilica di San Vitale", pos: [44.4206, 12.1964], time: "~6 min" },
+          { n: 6, name: "Mausoleum of Galla Placidia", pos: [44.42111, 12.19694], time: "~7 min" },
+        ];
+        const map = L.map("ravenna-map", {
+          scrollWheelZoom: false,
+          dragging: false,
+          doubleClickZoom: false,
+          boxZoom: false,
+          keyboard: false,
+          tap: false,
+          zoomControl: true,
+          attributionControl: true,
+        });
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          maxZoom: 19,
+          attribution: "&copy; OpenStreetMap contributors",
+        }).addTo(map);
+        const icon = (text, hotelClass = "") =>
+          L.divIcon({
+            className: "map-number " + hotelClass,
+            html: text,
+            iconSize: [26, 26],
+            iconAnchor: [13, 13],
+          });
+        L.marker(hotel, { icon: icon("H", "hotel") })
+          .addTo(map)
+          .bindTooltip("A Casa Di Paola", {
+            permanent: true,
+            direction: "top",
+            offset: [0, -15],
+            className: "map-label",
+          });
+        const colours = ["#7c3aed", "#0891b2", "#ea580c", "#16a34a", "#db2777", "#4f46e5"];
+        sites.forEach((site, i) => {
+          L.marker(site.pos, { icon: icon(String(site.n)) })
+            .addTo(map)
+            .bindTooltip(site.name + " · " + site.time, {
+              permanent: true,
+              direction: i % 2 ? "right" : "left",
+              offset: [i % 2 ? 15 : -15, 0],
+              className: "map-label",
+            });
+          L.polyline([hotel, site.pos], {
+            color: colours[i],
+            weight: 4,
+            opacity: 0.8,
+            dashArray: "8 7",
+          })
+            .addTo(map)
+            .bindTooltip("Walk to " + site.name + " " + site.time);
+        });
+        map.fitBounds(L.latLngBounds([hotel, ...sites.map((s) => s.pos)]).pad(0.22));
+        setTimeout(() => map.invalidateSize(), 150);
+      })();
+    </script>
+    <script>
+      const phrases = {
+        croatian: [
+          { p: "Dobar dan", e: "Good day/Hello", u: "Greeting locals and hotel staff" },
+          { p: "Hvala", e: "Thank you", u: "After service or help" },
+          { p: "Molim", e: "Please / You are welcome", u: "Polite requests" },
+        ],
+        italian: [
+          { p: "Ciao", e: "Hello / Goodbye", u: "Informal greeting" },
+          { p: "Grazie", e: "Thank you", u: "Restaurants and shops" },
+          { p: "Per favore", e: "Please", u: "Polite requests" },
+        ],
+      };
+      function newPhrase() {
+        let a = phrases[lang.value];
+        let x = a[Math.floor(Math.random() * a.length)];
+        window.cur = x;
+        phrase.textContent = x.p;
+        eng.textContent = x.e;
+        use.textContent = x.u;
+      }
+      function speakPhrase() {
+        let u = new SpeechSynthesisUtterance(cur.p);
+        u.lang = lang.value === "croatian" ? "hr-HR" : "it-IT";
+        speechSynthesis.speak(u);
+      }
+      lang.onchange = newPhrase;
+      newPhrase();
+    </script>
+  </body>
+</html>
