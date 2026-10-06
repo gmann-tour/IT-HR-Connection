@@ -480,13 +480,16 @@
             language: "en-US",
           };
           const url =
-            "https://valhalla1.openstreetmap.de/route?json=" +
+            "https://valhalla.openstreetmap.de/route?json=" +
             encodeURIComponent(JSON.stringify(request));
           try {
             const response = await fetch(url);
             if (!response.ok) throw new Error("HTTP " + response.status);
             const data = await response.json();
-            const coords = data.trip.legs[0].shape.coordinates.map((c) => [c[1], c[0]]);
+            const shape = data.trip.legs[0].shape;
+            const rawCoords = shape && shape.coordinates ? shape.coordinates : null;
+            if (!rawCoords) throw new Error("Route geometry missing");
+            const coords = rawCoords.map((c) => [c[1], c[0]]);
             const summary = data.trip.summary;
             const mins = Math.max(1, Math.round(summary.time / 60));
             const km = Number(summary.length).toFixed(2);
