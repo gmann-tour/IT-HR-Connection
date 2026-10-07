@@ -184,6 +184,27 @@
         ><button class="btn" onclick="document.body.classList.toggle('dark')">Dark Mode</button
         ><button class="btn" onclick="window.print()">Print/PDF</button>
       </div>
+      <details class="language-helper">
+        <summary>🇭🇷 Croatian &amp; 🇮🇹 Italian Language Helper</summary>
+        <div class="content">
+          <select id="lang">
+            <option value="croatian">Croatian</option>
+            <option value="italian">Italian</option>
+          </select>
+          <h2 id="phrase"></h2>
+          <div class="pill">
+            <b>English:</b>
+            <span id="eng"></span>
+          </div>
+          <div class="pill">
+            <b>Use case:</b>
+            <span id="use"></span>
+          </div>
+          <button class="btn" onclick="speakPhrase()">🔊 Listen</button>
+          <button class="btn" onclick="newPhrase()">🎲 New Phrase</button>
+        </div>
+      </details>
+      <!--
       <div class="card">
         <div class="header">🇭🇷 Croatian & 🇮🇹 Italian Language Helper</div>
         <div class="content">
@@ -198,6 +219,7 @@
           ><button class="btn" onclick="newPhrase()">🎲 New Phrase</button>
         </div>
       </div>
+      -->
       <details>
         <summary>Sun 4 July - Ravenna</summary>
         <div class="content">
