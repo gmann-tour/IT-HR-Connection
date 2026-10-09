@@ -1,354 +1,683 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Italy and Croatia 2027 travel itinerary">
-    <title>Italy &amp; Croatia 2027</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>IT and HR Connection</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
     <style>
-        :root {
-            --italy-green: #1f7a5a;
-            --croatia-blue: #174a7e;
-            --cream: #fffaf0;
-            --line: #d8dee6;
-            --text: #24313d;
-            --white: #ffffff;
+      body {
+        font-family:
+          Segoe UI,
+          Arial,
+          sans-serif;
+        background: #f4f6f9;
+        padding: 20px;
+      }
+      .container {
+        max-width: 1200px;
+        margin: auto;
+      }
+      .card,
+      details {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin: 0 0 16px;
+        overflow: hidden;
+      }
+      summary,
+      .header {
+        background: #1e40af;
+        color: #fff;
+        padding: 14px;
+        font-weight: 700;
+      }
+      .content {
+        padding: 16px;
+      }
+      .btn {
+        background: #2563eb;
+        color: #fff;
+        padding: 10px 14px;
+        border-radius: 8px;
+        text-decoration: none;
+        border: none;
+        margin: 4px;
+        display: inline-block;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 12px;
+      }
+      .pill {
+        background: #eff6ff;
+        padding: 10px;
+        border-radius: 8px;
+        margin: 8px 0;
+      }
+      .badge {
+        background: #16a34a;
+        color: #fff;
+        padding: 4px 8px;
+        border-radius: 999px;
+      }
+      .dark {
+        background: #111827;
+        color: #e5e7eb;
+      }
+      .dark .card,
+      .dark details {
+        background: #1f2937;
+      }
+      @media print {
+        .controls {
+          display: none;
         }
-
-        * { box-sizing: border-box; }
-
-        body {
-            margin: 0;
-            padding: 32px 18px;
-            font-family: Arial, Helvetica, sans-serif;
-            color: var(--text);
-            background: linear-gradient(135deg, #f3f8f5 0%, #f4f7fb 55%, var(--cream) 100%);
-        }
-
-        .page {
-            width: min(1400px, 100%);
-            margin: 0 auto;
-            background: var(--white);
-            border-radius: 16px;
-            box-shadow: 0 12px 35px rgba(23, 74, 126, 0.12);
-            overflow: hidden;
-        }
-
-        header {
-            padding: 32px 24px;
-            text-align: center;
-            color: var(--white);
-            background: linear-gradient(110deg, var(--italy-green), var(--croatia-blue));
-        }
-
-        h1 {
-            margin: 0;
-            font-family: Georgia, "Times New Roman", serif;
-            font-size: clamp(2rem, 5vw, 3.4rem);
-            letter-spacing: 0.02em;
-        }
-
-        header p {
-            margin: 10px 0 0;
-            opacity: 0.92;
-        }
-
-        .table-wrap {
-            padding: 24px;
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            min-width: 980px;
-            border-collapse: collapse;
-            table-layout: fixed;
-        }
-
-        th, td {
-            border: 1px solid var(--line);
-            padding: 12px 10px;
-            vertical-align: top;
-            text-align: left;
-        }
-
-        th {
-            color: var(--white);
-            background: var(--croatia-blue);
-            font-size: 0.92rem;
-            letter-spacing: 0.03em;
-        }
-
-        tbody tr:nth-child(even) { background: #f7fafc; }
-        tbody tr:hover { background: #eef7f3; }
-
-        td {
-            height: 54px;
-            line-height: 1.4;
-        }
-
-        td[contenteditable="true"]:focus {
-            outline: 3px solid rgba(31, 122, 90, 0.22);
-            background: #fffef4;
-        }
-
-        th:nth-child(1), td:nth-child(1) { width: 5%; text-align: center; font-weight: 700; }
-        th:nth-child(2), td:nth-child(2) { width: 5%; }
-        th:nth-child(3), td:nth-child(3) { width: 5%; }
-        th:nth-child(4), td:nth-child(4) { width: 27%; }
-        th:nth-child(5), td:nth-child(5) { width: 13%; }
-        th:nth-child(6), td:nth-child(6) { width: 29%; }
-
-        footer {
-            padding: 0 24px 24px;
-            color: #647180;
-            font-size: 0.88rem;
-            text-align: center;
-        }
-
-        @media print {
-            body { padding: 0; background: white; }
-            .page { box-shadow: none; border-radius: 0; }
-            header { padding: 18px; }
-            .table-wrap { padding: 10px; overflow: visible; }
-            table { min-width: 0; font-size: 9pt; }
-            th, td { padding: 6px; }
-            td { height: 32px; }
-        }
+      }
+      #ravenna-map {
+        height: 680px;
+        width: 100%;
+        border-radius: 10px;
+        border: 1px solid #cbd5e1;
+        background: #e5e7eb;
+      }
+      .map-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 18px;
+        margin-top: 12px;
+        padding: 12px;
+        background: #fff;
+        border-radius: 8px;
+      }
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 0.9rem;
+      }
+      .legend-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        display: inline-block;
+        border: 2px solid #fff;
+        box-shadow: 0 0 0 1px #64748b;
+      }
+      .legend-line {
+        width: 30px;
+        border-top: 4px solid #7c3aed;
+        display: inline-block;
+      }
+      .map-label {
+        background: #fff;
+        border: 1px solid #334155;
+        border-radius: 4px;
+        color: #111827;
+        font-weight: 700;
+        padding: 2px 6px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+      }
+      .map-number {
+        background: #2563eb;
+        color: #fff;
+        border: 2px solid #fff;
+        border-radius: 50%;
+        width: 26px !important;
+        height: 26px !important;
+        line-height: 22px;
+        text-align: center;
+        font-weight: 700;
+        box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+      }
+      .map-number.hotel {
+        background: #dc2626;
+      }
+      .route-status {
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 8px;
+        background: #eef2ff;
+        color: #3730a3;
+      }
+      .map-fallback {
+        padding: 18px;
+        background: #fff7ed;
+        color: #9a3412;
+        border: 1px solid #fdba74;
+        border-radius: 8px;
+      }
+      .site-link {
+        font-weight: 700;
+        color: #1d4ed8;
+      }
+      .highlights {
+        list-style: none;
+        padding-left: 0;
+      }
+      .highlights li {
+        margin: 6px 0;
+      }
+      .highlights li::before {
+        content: "✓";
+        color: #16a34a;
+        font-weight: bold;
+        margin-right: 8px;
+      }
     </style>
-</head>
-<body>
-    <main class="page">
-        <header>
-            <h1>Italy &amp; Croatia 2027</h1>
-            <p>Travel Itinerary</p>
-        </header>
+  </head>
+  <body>
+    <h2 style="text-align: center;">Epic Journey Unites Us</h2>
+    <h2 style="text-align: center;">🇦🇺 🇨🇦 🇭🇷 🇮🇹</h2>
+    <div class="container">
+      <div class="controls">
+        <button
+          class="btn"
+          onclick="document.querySelectorAll('details').forEach((d) => (d.open = true))"
+        >
+          Expand All</button
+        ><button
+          class="btn"
+          onclick="document.querySelectorAll('details').forEach((d) => (d.open = false))"
+        >
+          Collapse All</button
+        ><button class="btn" onclick="document.body.classList.toggle('dark')">Dark Mode</button
+        ><button class="btn" onclick="window.print()">Print/PDF</button>
+      </div>
+      <details class="language-helper">
+        <summary>🇭🇷 Croatian &amp; 🇮🇹 Italian Language Helper</summary>
+        <div class="content">
+          <select id="lang">
+            <option value="croatian">Croatian</option>
+            <option value="italian">Italian</option>
+          </select>
+          <h2 id="phrase"></h2>
+          <div class="pill">
+            <b>English:</b>
+            <span id="eng"></span>
+          </div>
+          <div class="pill">
+            <b>Use case:</b>
+            <span id="use"></span>
+          </div>
+          <button class="btn" onclick="speakPhrase()">🔊 Listen</button>
+          <button class="btn" onclick="newPhrase()">🎲 New Phrase</button>
+        </div>
+      </details>
+      <!--
+      <div class="card">
+        <div class="header">🇭🇷 Croatian & 🇮🇹 Italian Language Helper</div>
+        <div class="content">
+          <select id="lang">
+            <option value="croatian">Croatian</option>
+            <option value="italian">Italian</option>
+          </select>
+          <h2 id="phrase"></h2>
+          <div class="pill"><b>English:</b> <span id="eng"></span></div>
+          <div class="pill"><b>Use case:</b> <span id="use"></span></div>
+          <button class="btn" onclick="speakPhrase()">🔊 Listen</button
+          ><button class="btn" onclick="newPhrase()">🎲 New Phrase</button>
+        </div>
+      </div>
+      -->
+      <details>
+        <summary>Sun 4 July - Ravenna</summary>
+        <div class="content">
+          <div class="grid">
+            <div class="pill">
+              <h3>🏨 Stay - A Casa Di Paola</h3>
+              <p><b>Check-in: 2:00pm Check-out: 11:00am</b><br />Via Paolo Costa 31, Ravenna<br />✓ Breaksfast included</p>
+              <a
+                class="btn"
+                href="https://www.google.com/maps/search/?api=1&query=Via+Paolo+Costa+31+Ravenna"
+                target="_blank"
+                >Google Maps</a
+              ><a
+                class="btn"
+                href="https://www.openstreetmap.org/?mlat=44.419037&mlon=12.201477#map=18/44.419037/12.201477"
+                target="_blank"
+                >OpenStreetMap</a
+              ><a
+                class="btn"
+                href="https://www.visitravenna.it/public/upl_images/visitravenna/2024-mappa-gusto.pdf"
+                target="_blank"
+                >Visit Ranvenna Map</a
+              >
+            </div>
+            <div class="pill">
+              <h3>📍 Sites · Pedestrian route from accommodation</h3>
+              <p>
+                <a
+                  class="site-link"
+                  href="https://www.google.com/maps/search/?api=1&query=Piazza+del+Popolo+Ravenna"
+                  target="_blank"
+                  rel="noopener"
+                  >1. Piazza del Popolo</a
+                ><br /><span id="walk-1">Calculating pedestrian route…</span>
+              </p>
+              <p>
+                <a
+                  class="site-link"
+                  href="https://www.google.com/maps/search/?api=1&query=Arian+Baptistery+Ravenna"
+                  target="_blank"
+                  rel="noopener"
+                  >2. Arian Baptistery</a
+                ><br /><span id="walk-2">Calculating pedestrian route…</span>
+              </p>
+              <p>
+                <a
+                  class="site-link"
+                  href="https://www.google.com/maps/search/?api=1&query=Dante%27s+Tomb+Ravenna"
+                  target="_blank"
+                  rel="noopener"
+                  >3. Dante's Tomb</a
+                ><br /><span id="walk-3">Calculating pedestrian route…</span>
+              </p>
+              <p>
+                <a
+                  class="site-link"
+                  href="https://www.google.com/maps/search/?api=1&query=Basilica+di+Sant%27Apollinare+Nuovo+Ravenna"
+                  target="_blank"
+                  rel="noopener"
+                  >4. Basilica di Sant'Apollinare Nuovo</a
+                ><br /><span id="walk-4">Calculating pedestrian route…</span>
+              </p>
+              <p>
+                <a
+                  class="site-link"
+                  href="https://www.google.com/maps/search/?api=1&query=Basilica+di+San+Vitale+Ravenna"
+                  target="_blank"
+                  rel="noopener"
+                  >5. Basilica di San Vitale</a
+                ><br /><span id="walk-5">Calculating pedestrian route…</span>
+              </p>
+              <p>
+                <a
+                  class="site-link"
+                  href="https://www.google.com/maps/search/?api=1&query=Mausoleum+of+Galla+Placidia+Ravenna"
+                  target="_blank"
+                  rel="noopener"
+                  >6. Mausoleum of Galla Placidia</a
+                ><br /><span id="walk-6">Calculating pedestrian route…</span>
+              </p>
+              <p>
+                <a
+                  class="site-link"
+                  href="https://www.google.com/maps/search/?api=1&query=La+Piadina+del+Melarancio+Ravenna"
+                  target="_blank"
+                  rel="noopener"
+                  >7. La Piadina del Melarancio (Deli Sandwhiches)</a
+                ><br /><span id="walk-7">Calculating pedestrian route…</span>
+              </p>
+              <p>
+                <a
+                  class="site-link"
+                  href="https://www.google.com/maps/search/?api=1&query=Parco+della+Rocca+Brancaleone+Ravenna"
+                  target="_blank"
+                  rel="noopener"
+                  >8. Parco della Rocca Brancaleone (Green Space for a wine and beer)</a
+                ><br /><span id="walk-8">Calculating pedestrian route…</span>
+              </p>
+            </div>
+          </div>
+          <div class="pill" style="margin-top: 16px">
+            <h3>🗺️ Accommodation, Sites &amp; Pedestrian Routes</h3>
+            <div
+              id="ravenna-map"
+              role="img"
+              aria-label="Map showing A Casa Di Paola and pedestrian routes to Ravenna sites"
+            >
+              <noscript
+                ><div class="map-fallback">
+                  JavaScript must be enabled to display this map.
+                </div></noscript
+              >
+            </div>
+            <div id="route-status" class="route-status">Loading pedestrian routes…</div>
+            <div class="map-legend">
+              <div class="legend-item">
+                <span class="legend-dot" style="background: #dc2626"></span><b>H</b> Accommodation
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot" style="background: #2563eb"></span><b>1–8</b> Sites
+              </div>
+              <div class="legend-item"><span class="legend-line"></span>Pedestrian route</div>
+            </div>
+            <small
+              >Map © OpenStreetMap contributors. Pedestrian routes are requested from the public
+              Valhalla OpenStreetMap routing service when the page opens.</small
+            >
+          </div>
 
-        <section class="table-wrap" aria-label="Travel itinerary">
-            <table>
-                <thead>
-                    <tr>
-                        <th scope="col">Day</th>
-                        <th scope="col">Date</th>
-                        <th scope="col">Local Time</th>
-                        <th scope="col">Activity</th>
-                        <th scope="col">Travel Time</th>
-                        <th scope="col">Comments</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td data-label="Day">Thur</td>
-                    <td data-label="Date">1 Jul</td>
-                    <td data-label="Local Time">08:00am</td>
-                    <td data-label="Activity">
-                        Arrive Rome (FCO)<br>
-                        Train to Bologna<br>
-                        Accom: Bologna (???)<br>
-                        Activity: Sleep
-                    </td>
-                    <td data-label="Travel Time" contenteditable="true"></td>
-                    <td data-label="Comments" contenteditable="true"></td>
-                </tr>
-                <tr>
-                    <td data-label="Day">Fri</td>
-                    <td data-label="Date">2 Jul</td>
-                    <td data-label="Local Time" contenteditable="true"></td>
-                    <td data-label="Activity" contenteditable="true"></td>
-                    <td data-label="Travel Time" contenteditable="true"></td>
-                    <td data-label="Comments" contenteditable="true"></td>
-                </tr>
-                <tr>
-                    <td data-label="Day">3</td>
-                    <td data-label="Date" contenteditable="true"></td>
-                    <td data-label="Local Time" contenteditable="true"></td>
-                    <td data-label="Activity" contenteditable="true"></td>
-                    <td data-label="Travel Time" contenteditable="true"></td>
-                    <td data-label="Comments" contenteditable="true"></td>
-                </tr>
-                <tr>
-                    <td data-label="Day">4</td>
-                    <td data-label="Date" contenteditable="true"></td>
-                    <td data-label="Local Time" contenteditable="true"></td>
-                    <td data-label="Activity" contenteditable="true"></td>
-                    <td data-label="Travel Time" contenteditable="true"></td>
-                    <td data-label="Comments" contenteditable="true"></td>
-                </tr>
-                <tr>
-                    <td data-label="Day">5</td>
-                    <td data-label="Date" contenteditable="true"></td>
-                    <td data-label="Local Time" contenteditable="true"></td>
-                    <td data-label="Activity" contenteditable="true"></td>
-                    <td data-label="Travel Time" contenteditable="true"></td>
-                    <td data-label="Comments" contenteditable="true"></td>
-                </tr>
-                <tr>
-                    <td data-label="Day">6</td>
-                    <td data-label="Date" contenteditable="true"></td>
-                    <td data-label="Local Time" contenteditable="true"></td>
-                    <td data-label="Activity" contenteditable="true"></td>
-                    <td data-label="Travel Time" contenteditable="true"></td>
-                    <td data-label="Comments" contenteditable="true"></td>
-                </tr>
-                <tr>
-                    <td data-label="Day">7</td>
-                    <td data-label="Date" contenteditable="true"></td>
-                    <td data-label="Local Time" contenteditable="true"></td>
-                    <td data-label="Activity" contenteditable="true"></td>
-                    <td data-label="Travel Time" contenteditable="true"></td>
-                    <td data-label="Comments" contenteditable="true"></td>
-                </tr>
-                <tr>
-                    <td data-label="Day">8</td>
-                    <td data-label="Date" contenteditable="true"></td>
-                    <td data-label="Local Time" contenteditable="true"></td>
-                    <td data-label="Activity" contenteditable="true"></td>
-                    <td data-label="Travel Time" contenteditable="true"></td>
-                    <td data-label="Comments" contenteditable="true"></td>
-                </tr>
-                <tr>
-                    <td data-label="Day">9</td>
-                    <td data-label="Date" contenteditable="true"></td>
-                    <td data-label="Local Time" contenteditable="true"></td>
-                    <td data-label="Activity" contenteditable="true"></td>
-                    <td data-label="Travel Time" contenteditable="true"></td>
-                    <td data-label="Comments" contenteditable="true"></td>
-                </tr>
-                <tr>
-                    <td data-label="Day">10</td>
-                    <td data-label="Date" contenteditable="true"></td>
-                    <td data-label="Local Time" contenteditable="true"></td>
-                    <td data-label="Activity" contenteditable="true"></td>
-                    <td data-label="Travel Time" contenteditable="true"></td>
-                    <td data-label="Comments" contenteditable="true"></td>
-                </tr>
-                <tr>
-                    <td data-label="Day">11</td>
-                    <td data-label="Date" contenteditable="true"></td>
-                    <td data-label="Local Time" contenteditable="true"></td>
-                    <td data-label="Activity" contenteditable="true"></td>
-                    <td data-label="Travel Time" contenteditable="true"></td>
-                    <td data-label="Comments" contenteditable="true"></td>
-                </tr>
-                <tr>
-                    <td data-label="Day">12</td>
-                    <td data-label="Date" contenteditable="true"></td>
-                    <td data-label="Local Time" contenteditable="true"></td>
-                    <td data-label="Activity" contenteditable="true"></td>
-                    <td data-label="Travel Time" contenteditable="true"></td>
-                    <td data-label="Comments" contenteditable="true"></td>
-                </tr>
-                <tr>
-                    <td data-label="Day">13</td>
-                    <td data-label="Date" contenteditable="true"></td>
-                    <td data-label="Local Time" contenteditable="true"></td>
-                    <td data-label="Activity" contenteditable="true"></td>
-                    <td data-label="Travel Time" contenteditable="true"></td>
-                    <td data-label="Comments" contenteditable="true"></td>
-                </tr>
-                <tr>
-                    <td data-label="Day">14</td>
-                    <td data-label="Date" contenteditable="true"></td>
-                    <td data-label="Local Time" contenteditable="true"></td>
-                    <td data-label="Activity" contenteditable="true"></td>
-                    <td data-label="Travel Time" contenteditable="true"></td>
-                    <td data-label="Comments" contenteditable="true"></td>
-                </tr>
-                <tr>
-                    <td data-label="Day">15</td>
-                    <td data-label="Date" contenteditable="true"></td>
-                    <td data-label="Local Time" contenteditable="true"></td>
-                    <td data-label="Activity" contenteditable="true"></td>
-                    <td data-label="Travel Time" contenteditable="true"></td>
-                    <td data-label="Comments" contenteditable="true"></td>
-                </tr>
-                <tr>
-                    <td data-label="Day">16</td>
-                    <td data-label="Date" contenteditable="true"></td>
-                    <td data-label="Local Time" contenteditable="true"></td>
-                    <td data-label="Activity" contenteditable="true"></td>
-                    <td data-label="Travel Time" contenteditable="true"></td>
-                    <td data-label="Comments" contenteditable="true"></td>
-                </tr>
-                <tr>
-                    <td data-label="Day">17</td>
-                    <td data-label="Date" contenteditable="true"></td>
-                    <td data-label="Local Time" contenteditable="true"></td>
-                    <td data-label="Activity" contenteditable="true"></td>
-                    <td data-label="Travel Time" contenteditable="true"></td>
-                    <td data-label="Comments" contenteditable="true"></td>
-                </tr>
-                <tr>
-                    <td data-label="Day">18</td>
-                    <td data-label="Date" contenteditable="true"></td>
-                    <td data-label="Local Time" contenteditable="true"></td>
-                    <td data-label="Activity" contenteditable="true"></td>
-                    <td data-label="Travel Time" contenteditable="true"></td>
-                    <td data-label="Comments" contenteditable="true"></td>
-                </tr>
-                <tr>
-                    <td data-label="Day">19</td>
-                    <td data-label="Date" contenteditable="true"></td>
-                    <td data-label="Local Time" contenteditable="true"></td>
-                    <td data-label="Activity" contenteditable="true"></td>
-                    <td data-label="Travel Time" contenteditable="true"></td>
-                    <td data-label="Comments" contenteditable="true"></td>
-                </tr>
-                <tr>
-                    <td data-label="Day">20</td>
-                    <td data-label="Date" contenteditable="true"></td>
-                    <td data-label="Local Time" contenteditable="true"></td>
-                    <td data-label="Activity" contenteditable="true"></td>
-                    <td data-label="Travel Time" contenteditable="true"></td>
-                    <td data-label="Comments" contenteditable="true"></td>
-                </tr>
-                <tr>
-                    <td data-label="Day">21</td>
-                    <td data-label="Date" contenteditable="true"></td>
-                    <td data-label="Local Time" contenteditable="true"></td>
-                    <td data-label="Activity" contenteditable="true"></td>
-                    <td data-label="Travel Time" contenteditable="true"></td>
-                    <td data-label="Comments" contenteditable="true"></td>
-                </tr>
-                <tr>
-                    <td data-label="Day">22</td>
-                    <td data-label="Date" contenteditable="true"></td>
-                    <td data-label="Local Time" contenteditable="true"></td>
-                    <td data-label="Activity" contenteditable="true"></td>
-                    <td data-label="Travel Time" contenteditable="true"></td>
-                    <td data-label="Comments" contenteditable="true"></td>
-                </tr>
-                <tr>
-                    <td data-label="Day">23</td>
-                    <td data-label="Date" contenteditable="true"></td>
-                    <td data-label="Local Time" contenteditable="true"></td>
-                    <td data-label="Activity" contenteditable="true"></td>
-                    <td data-label="Travel Time" contenteditable="true"></td>
-                    <td data-label="Comments" contenteditable="true"></td>
-                </tr>
-                <tr>
-                    <td data-label="Day">24</td>
-                    <td data-label="Date" contenteditable="true"></td>
-                    <td data-label="Local Time" contenteditable="true"></td>
-                    <td data-label="Activity" contenteditable="true"></td>
-                    <td data-label="Travel Time" contenteditable="true"></td>
-                    <td data-label="Comments" contenteditable="true"></td>
-                </tr>
-                <tr>
-                    <td data-label="Day">25</td>
-                    <td data-label="Date" contenteditable="true"></td>
-                    <td data-label="Local Time" contenteditable="true"></td>
-                    <td data-label="Activity" contenteditable="true"></td>
-                    <td data-label="Travel Time" contenteditable="true"></td>
-                    <td data-label="Comments" contenteditable="true"></td>
-                </tr>
-                </tbody>
-            </table>
-        </section>
+          <div class="grid">
+            <div class="pill">
+              <h3>🍽️ Meal Options </h3>              
+              <h4>La Piadina del Melarancio <span class="badge">Deli</span></h4>
+              <p>Walk over to park (Parco della Rocca Brancaleone) for a beverage</p>
+              <p>Via Corrado Ricci 24, Ravenna</p>
+              <p>Approx. 7 min walk from accommodation</p>
+              <a
+                class="btn"
+                target="_blank"
+                href="https://maps.app.goo.gl/ns7sEKaAtNiMp4JJ6?g_st=ic"
+                >Map</a
+              >
+            </div>
+            <div class="pill">
+              <h4>Osteria Passatelli <span class="badge">Formerly a Movie Theatre</span></h4>
+              <p> </p>
+              <p>Via Ponte Marino 19, Ravenna</p>
+              <p>Approx. 4 min walk from accommodation</p>
+              <a
+                class="btn"
+                target="_blank"
+                href="https://maps.app.goo.gl/Y5JxBuYTRaZj4EJQ9?g_st=ic"
+                >Map</a
+              >
+            </div>
+            <div class="pill">
+              <h4>Partenope Pizzeria Trattoria Napoletana <span class="badge">Pizza and Pasta</span></h4>
+              <p> </p>
+              <p>Via Ponte Marino 23, Ravenna</p>
+              <p>Approx. 4 min walk from accommodation</p>
+              <a
+                class="btn"
+                target="_blank"
+                href="https://maps.app.goo.gl/9efhRTGdfTtLxM1n9?g_st=ic"
+                >Map</a
+              >
+            </div>
 
-        <footer>
-            Select any blank cell to type itinerary details. Browser edits are temporary unless the file is saved again.
-        </footer>
-    </main>
-</body>
+          </div>
+        </div>
+      </details>
+      <details>
+        <summary>Mon 5 July - Arrivederci Ravenna, Ship departs 4:30pm</summary>
+        <div class="content">
+          <p><b>Check-out: 11:00am</b><br />Via Paolo Costa 31, Ravenna</p>
+          <p>Grab a lite Pasticceria, caffè e tè</p>
+          <a class="site-link"
+             href="https://maps.app.goo.gl/uJRJJwY2xXTjGFbS9"
+             target="_blank"
+            rel="noopener">
+            Caffè Letterario Ravenna (Coffee anyone)</a>
+          <a></a>
+          <p><b style="color: #dc2626;">RESEARCH REQ: Transport (people mover 8seats + 8bags)</b><br /> Book transport to Porto Corsini (research shows from hotel local €20 per person, book thru booking.com A$21 per person)</p>
+          <p>Ship embarkation from ??:00pm Ship Ahoy! <b>Godspeed.</b></p>
+        </div>
+      </details>
+      <details>
+        <summary>Tue 6 July - Split, Croatia</summary>
+        <div class="content">
+          <p><b>Ship Docked 8:30am - 4:30pm</b></p>
+          <h4>Highlights to do:</h4>
+            <ul class="highlights">
+              <li>Walk to centre from port (10mins)</li>
+              <li>Hike up to Marjan Hill via Riva (30mins)</li>
+              <li>Rest at Riva, Pecivo, kafa i čaj (pomalo)</li>
+              <li>Gregory of Nin Statue (5-10mins)</li>
+              <li>Diocletian's Palace (10 mins) down to the cellars</li>
+              <li>St. Domnius Cathedral (pass Purple: €15, access to all sites: Cathedral, Crypt, Baptistery, Treasury, Bell Tower)</li>
+              <li>Bačvice City Beach (20 mins)</li>
+              <li>Žnjan City Beach (bus 30-40 mins)</li>
+            </ul>
+        </div>
+      </details>
+      <details>
+        <summary>Wed 7 July - Brindisi, Italy</summary>
+        <div class="content">
+          <p><b>Ship Docked 8:30am - 5:30pm</b></p>
+          <p>Brindisi is a historic port city in the Puglia region of southern Italy known for being the ancient endpoint of the Appian Way and a major gateway to the Adriatic Sea.</p>
+          <a
+                class="btn"
+                href="https://www.pugliaguys.com/2026/03/28/brindisi-guide/"
+                target="_blank"
+                >Brindisi History</a>
+          <h4>Highlights to do:</h4>
+            <ul class="highlights">
+              <li>Walk to centre from port (10mins)</li>
+              <li></li>
+            </ul>             
+        </div>
+      </details>
+      <details>
+        <summary>Thu 8 July - Bar, Montenegro</summary>
+        <div class="content">
+          <p><b>Ship Docked 8:30am - 5:30pm</b></p>
+          <a>The Old Town of Bar is the largest and the most important medieval archaeological site in the Balkans. It covers the area of 4.5 hectares, where the remains of around 600 public and private edifices are the proof of the existence of various construction phases present in different epochs of the Mediterranean history.</a>
+          <a
+                class="btn"
+                href="https://whc.unesco.org/en/tentativelists/5562/"
+                target="_blank"
+                >Old Town Bar UNSECO</a>
+          <h4>Highlights to do:</h4>
+            <ul class="highlights">
+              <li>Walk to centre from port (10mins)</li>
+              <li></li>
+            </ul>
+          </div>
+      </details>
+      <details>
+        <summary>Fri 9 July - Dubrovnik, Croatia</summary>
+        <div class="content">
+          <p><b>Ship Docked 7:30am - 4:30pm</b></p>
+          <h4>Highlights to do:</h4>
+            <ul class="highlights">
+              <li>Assume shuttle will be provided to centre from port (15mins)</li>
+              <li>Walk City Walls (1-1.5hr to complete)</li>
+              <li>Rest at Mostro Gelato Stradun (Yum!)</li>
+              <li>Church of St. Stephen (remains) Crkva sv. Stjepan (ostaci) (in city walls)</li>
+              <li>Jesuit Stairs (in city walls)</li>
+              <li>Buža Bar (if you are keen to cliff jump or observe)</li>
+              <li>Uvala Lapad Beach (closer to the cruise port 10mins bus)</li>
+              <li>Banje Beach (15mins from City Polce Gate)</li>
+            </ul>
+        </div>
+      </details>
+      <details>
+        <summary>Sat 10 July - Day at Sea</summary>
+        <div class="content">
+          Give the legs and body a rest.
+        </div>
+      </details>
+      <details>
+        <summary>Sun 11 July - Amalfi Coast (Salerno), Italy</summary>
+        <div class="content">
+          <p><b>Ship Docked 8:30am - 6:30pm</b></p>
+          <a>Formerly part of the Roman Empire, as evidenced by the numerous patrician villas, the inhabitants of the then Amalfi Coast during the Greek-Gothic War allied themselves with the Byzantines, who granted them greater autonomy from the Empire. Amalfi was later conquered by the Longobard principality of Salerno, but soon rejoined the Byzantine Empire acquiring administrative autonomy.</a>
+          <a
+                class="btn"
+                href="https://www.italia.it/en/campania/things-to-do/the-amalfi-coast"
+                target="_blank"
+                >Amalfi Coast</a>
+          <h4>Highlights to do:</h4>
+            <ul class="highlights">
+              <li>Walk to centre from port (10mins)</li>
+              <li>Pompeii (train 30-40mins one way) or ShoreEx by bus explore on own</li>
+              <li></li>
+            </ul>
+        </div>
+      </details>
+      <details>
+        <summary>Mon 12 July - Day at Sea</summary>
+        <div class="content">
+          Give the legs and body a rest.
+        </div>
+      </details>
+      <details>
+        <summary>Tue 13 July - Portofino, Italy</summary>
+        <div class="content">
+           <p><b>Ship Docked 7:30am - 5:30pm</b></p>
+          Add destination, accommodation, maps, travel times, restaurants and sightseeing.
+        </div>
+      </details>
+      <details>
+        <summary>Wed 14 July - Florence/Pisa (Livorno), Italy</summary>
+        <div class="content">
+          <p><b>Ship Docked 7:30am - Overnight</b></p>
+          Add destination, accommodation, maps, travel times, restaurants and sightseeing.
+        </div>
+      </details>
+      <details>
+        <summary>Thu 15 July - Florence/Pisa (Livorno), Italy</summary>
+        <div class="content">
+          <p><b>Ship Docked Overnight - 4:30pm</b></p>
+          Add destination, accommodation, maps, travel times, restaurants and sightseeing.
+        </div>
+      </details>
+      <details>
+        <summary>Fri 16 July - Rome (Civitavecchia), Italy</summary>
+        <div class="content">
+          <p><b>Ship Docked 5:30am</b></p>
+          That concludes the cruise.
+        </div>
+      </details>
+    </div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script>
+      (async function () {
+        const holder = document.getElementById("ravenna-map");
+        const status = document.getElementById("route-status");
+        if (!holder) return;
+        if (typeof L === "undefined") {
+          holder.innerHTML =
+            '<div class="map-fallback"><b>Map library did not load.</b><br>Check access to unpkg.com and tile.openstreetmap.org.</div>';
+          status.textContent = "Map unavailable.";
+          return;
+        }
+        const hotel = [44.419037, 12.201477];
+        const sites = [
+          { n: 1, name: "Piazza del Popolo", pos: [44.41776, 12.19971] },
+          { n: 2, name: "Arian Baptistery", pos: [44.41861, 12.2025] },
+          { n: 3, name: "Dante's Tomb", pos: [44.41616, 12.20091] },
+          { n: 4, name: "Basilica di Sant'Apollinare Nuovo", pos: [44.41667, 12.20472] },
+          { n: 5, name: "Basilica di San Vitale", pos: [44.4206, 12.1964] },
+          { n: 6, name: "Mausoleum of Galla Placidia", pos: [44.42111, 12.19694] },
+          { n: 7, name: "La Piadina del Melarancio", pos: [44.418488, 12.1992235] },
+          { n: 8, name: "Parco della Rocca Brancaleone", pos: [44.42233, 12.20554] },
+        ];
+        const map = L.map("ravenna-map", {
+          scrollWheelZoom: false,
+          zoomControl: true,
+          attributionControl: true,
+        });
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          maxZoom: 19,
+          attribution: "&copy; OpenStreetMap contributors",
+        }).addTo(map);
+        const icon = (text, hotelClass = "") =>
+          L.divIcon({
+            className: "map-number " + hotelClass,
+            html: text,
+            iconSize: [26, 26],
+            iconAnchor: [13, 13],
+          });
+        L.marker(hotel, { icon: icon("H", "hotel") })
+          .addTo(map)
+          .bindTooltip("A Casa Di Paola", {
+            permanent: true,
+            direction: "top",
+            offset: [0, -15],
+            className: "map-label",
+          });
+        sites.forEach((site, i) =>
+          L.marker(site.pos, { icon: icon(String(site.n)) })
+            .addTo(map)
+            .bindTooltip(site.name, {
+              permanent: true,
+              direction: i % 2 ? "right" : "left",
+              offset: [i % 2 ? 15 : -15, 0],
+              className: "map-label",
+            }),
+        );
+        map.fitBounds(L.latLngBounds([hotel, ...sites.map((s) => s.pos)]).pad(0.18));
+        const colours = [
+          "#7c3aed",
+          "#0891b2",
+          "#ea580c",
+          "#16a34a",
+          "#db2777",
+          "#4f46e5",
+          "#ca8a04",
+          "#0f766e",
+        ];
+        let ok = 0;
+
+        async function routeWithOsrmFoot(site) {
+          const coordinates = hotel[1] + "," + hotel[0] + ";" + site.pos[1] + "," + site.pos[0];
+          const url =
+            "https://routing.openstreetmap.de/routed-foot/route/v1/driving/" +
+            coordinates +
+            "?overview=full&geometries=geojson&steps=false";
+          const response = await fetch(url);
+          if (!response.ok) throw new Error("OSRM foot HTTP " + response.status);
+          const data = await response.json();
+          const route = data?.routes?.[0];
+          const rawCoords = route?.geometry?.coordinates;
+          if (!rawCoords) throw new Error("OSRM foot geometry missing");
+          return {
+            coords: rawCoords.map((c) => [c[1], c[0]]),
+            mins: Math.max(1, Math.round(route.duration / 60)),
+            km: Number(route.distance / 1000).toFixed(2),
+          };
+        }
+
+        for (let i = 0; i < sites.length; i++) {
+          const site = sites[i];
+          try {
+            const route = await routeWithOsrmFoot(site);
+            L.polyline(route.coords, { color: colours[i], weight: 5, opacity: 0.82 })
+              .addTo(map)
+              .bindTooltip(site.name + ": " + route.mins + " min, " + route.km + " km");
+            const label = document.getElementById("walk-" + site.n);
+            if (label) {
+              label.textContent = "About " + route.mins + " min · " + route.km + " km walk";
+            }
+            ok++;
+          } catch (error) {
+            const label = document.getElementById("walk-" + site.n);
+            if (label) label.textContent = "Pedestrian route unavailable";
+            console.warn("OSRM foot route failed for " + site.name, error);
+          }
+        }
+
+        status.textContent =
+          ok === sites.length
+            ? "All " + ok + " pedestrian routes loaded via OSRM foot."
+            : ok + " of " + sites.length + " pedestrian routes loaded via OSRM foot.";
+        setTimeout(() => map.invalidateSize(), 150);
+      })();
+    </script>
+    <script>
+      const phrases = {
+        croatian: [
+          { p: "Dobar dan", e: "Good day/Hello", u: "Greeting locals and hotel staff" },
+          { p: "Hvala", e: "Thank you", u: "After service or help" },
+          { p: "Molim", e: "Please / You are welcome", u: "Polite requests" },
+        ],
+        italian: [
+          { p: "Ciao", e: "Hello / Goodbye", u: "Informal greeting" },
+          { p: "Grazie", e: "Thank you", u: "Restaurants and shops" },
+          { p: "Per favore", e: "Please", u: "Polite requests" },
+        ],
+      };
+      function newPhrase() {
+        let a = phrases[lang.value];
+        let x = a[Math.floor(Math.random() * a.length)];
+        window.cur = x;
+        phrase.textContent = x.p;
+        eng.textContent = x.e;
+        use.textContent = x.u;
+      }
+      function speakPhrase() {
+        let u = new SpeechSynthesisUtterance(cur.p);
+        u.lang = lang.value === "croatian" ? "hr-HR" : "it-IT";
+        speechSynthesis.speak(u);
+      }
+      lang.onchange = newPhrase;
+      newPhrase();
+    </script>
+  </body>
 </html>
